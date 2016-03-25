@@ -1,0 +1,22 @@
+﻿Neu in Version 4
+
+- Es gibt einen OnLose Screen
+
+- Es gibt einen OnVictory Screen
+
+
+
+Neu in Version 3
+
+- Loadingscreen hinzugefügt
+
+- Änderungen in der Einbindung deines Spieles:
+	
+	- addLoadingScreen(this, false); auf True setzen um Loadingscreen automatisch zu überspringen
+	- in der create function muss removeLoadingScreen entfernt werden
+	- erzeuge eine mycreate function mit dem Inhalt der create. lösche den Inhalt von create (Pad.init(); belassen)
+	- addMyGame("JackDashDRJ","Jack Dash", "Let's GameDev", "Fange den fiesen Doofmann!", "Ausweichen", "Springen", "-", JackDanger.JackDashDRJ);
+
+Neu in Version 2
+Bugfix: Die justPress Funktion war fehlerhaft für die Cursortasten. Läuft nun aber!
+
