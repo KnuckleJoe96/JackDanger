@@ -54,7 +54,7 @@ JackDanger.fakeRender = function(render) {
             }
 
 		}
-		//render();
+		render();
 	}
 
 	return r;

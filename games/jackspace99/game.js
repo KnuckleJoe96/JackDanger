@@ -187,6 +187,8 @@ JackDanger.JackSpace.prototype.update = function() {
     }
 }
 
+JackDanger.JackSpace.prototype.render = function () {}
+
 JackDanger.JackSpace.prototype.initPhysics = function() {
     this.physics.startSystem(Phaser.Physics.ARCADE);
     this.physics.arcade.gravity.x = 0; 
