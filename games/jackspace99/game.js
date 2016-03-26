@@ -31,7 +31,7 @@ JackDanger.JackSpace.prototype.preload = function() {
     this.load.image('phaserb', '../assetsraw/phaserbig.png');
     this.load.image('TextBox', '../assetsraw/TextBox.png');
     this.load.image('TextBoxAnfang', '../assetsraw/TextBoxAnfang.png');
-
+    this.load.image('smoke', '../assetsraw/smoke.png');
     
     this.load.spritesheet('bosssheet', '../assetsraw/bossshipSpritesheet.png', 150, 450, 3);
     this.load.spritesheet('enemysheet', '../assetsraw/Enemy.png', 32, 32, 4);
@@ -351,6 +351,17 @@ JackDanger.JackSpace.prototype.updateEnemy = function() {
         this.enemyFire(t);
 
         if(t.health <= 0){
+            //Smoke
+            var smoke = game.add.sprite(t.x, t.y, 'smoke');
+            smoke.anchor.set(1, 0.5);
+            game.physics.enable(smoke, Phaser.Physics.ARCADE);
+            smoke.scale.set(2.5)
+            this.game.add.tween(smoke).to({alpha: 0}, 1500, Phaser.Easing.Quintic.In, true, 0, 0, false);
+            this.game.add.tween(smoke.scale).to({ x: 0.5, y: 0.5}, 1500, Phaser.Easing.Quadratic.In, true, 0, 0, false);
+            smoke.body.velocity.x = -50;
+            smoke.body.angularVelocity = Math.random()*90-45;
+
+            //Wrack
             var w1 = this.waist.create(t.x, t.y, 'wrack');
             w1.anchor.set(1, 0.5);
             w1.scale.set(2);
