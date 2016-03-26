@@ -36,6 +36,9 @@ JackDanger.JackSpace.prototype.preload = function() {
     this.load.spritesheet('bosssheet', '../assetsraw/bossshipSpritesheet.png', 150, 450, 3);
     this.load.spritesheet('enemysheet', '../assetsraw/Enemy.png', 32, 32, 4);
     this.load.spritesheet('wrack', '../assetsraw/flame.png', 32,32,2);
+    this.load.spritesheet('healthbar', '../assetsraw/Healthbar/HealthbarSheet.png', 40,49,3);
+    this.load.spritesheet('healthbarEnd', '../assetsraw/Healthbar/HealthbarEndSheet.png', 40,49,3);
+    this.load.spritesheet('healthbarStart', '../assetsraw/Healthbar/HealthbarStartSheet.png', 40,49,3);
 
     this.load.audio('bossspawn', '../assetsraw/sounds/bossspawn.ogg');
     this.load.audio('enemydestroy', '../assetsraw/sounds/enemydestroy.ogg');
@@ -47,7 +50,6 @@ JackDanger.JackSpace.prototype.preload = function() {
     this.load.audio('maintheme', '../assetsraw/sounds/mainmusic.ogg');
     this.load.audio('bosstheme', '../assetsraw/sounds/bosstheme.ogg');
 
-    //füge hie rein was du alles laden musst.#
     this.atlas = "jackspace99";
     this.load.atlas("jackspace99");
 }
@@ -92,6 +94,8 @@ JackDanger.JackSpace.prototype.mycreate = function() {
     this.waist.enableBody = true;
     this.waist.physicsBodyType = Phaser.Physics.ARCADE;
     
+    this.healthbar = game.add.group();
+
     //Eigene Schüsse
     this.lasers = game.add.group();
     this.lasers.enableBody = true;
@@ -160,7 +164,7 @@ JackDanger.JackSpace.prototype.update = function() {
     this.updateAsteroids(dt);
     this.updateEnemy(dt);
     this.updateBackground(dt);
-    if(this.bossSpawned) this.boss.updateBoss(this);
+    if(this.bossSpawned) this.boss.updateBoss(this); 
 
     //Collisions
     this.physics.arcade.overlap(this.asteroid, this.jack.sprite, this.lose, null, this); 
@@ -452,6 +456,7 @@ JackDanger.JackSpace.prototype.collect = function(player, collectedWaist) {
 JackDanger.JackSpace.prototype.spawnBoss = function() {
     this.boss = new JackDanger.JackSpace.Boss();
     game.physics.enable(this.boss, Phaser.Physics.ARCADE);
+    this.addHealthbar();
     return this.boss;
 }
 
@@ -513,18 +518,54 @@ JackDanger.JackSpace.Boss.prototype = {
             console.log(this.boss.boss.health);
             this.boss.boss.health--;
 
+            this.manageHealthbar(this.boss.boss.health);
+
             if(this.boss.boss.health <= 0) {
                 clearInterval(this.intervalSpawner);
-                onVictory();
+                game.time.events.add(500, onVictory);
             }
     }
 }
 
+JackDanger.JackSpace.prototype.manageHealthbar = function(health) {
+    switch(health) {
+                case 0: this.anim0.play(6, false);
+                break;
+                case 1: this.anim1.play(6, false);
+                break;
+                case 2: this.anim2.play(6, false);
+                break;
+                case 3: this.anim3.play(6, false);
+                break;
+                case 4: this.anim4.play(6, false);
+                break;
+                case 5: this.anim5.play(6, false);
+                break;
+                case 6: this.anim6.play(6, false);
+                break;
+                case 7: this.anim7.play(6, false);
+                break;
+                case 8: this.anim8.play(6, false);
+                break;
+                case 9: this.anim9.play(6, false);
+                break;
+                case 10: this.anim10.play(6, false);
+                break;
+                case 11: this.anim11.play(6, false);
+                break;
+                case 12: this.anim12.play(6, false);
+                break;
+                case 13: this.anim13.play(6, false);
+                break;
+                case 14: this.anim14.play(6, false);
+                break;
+                default: ;
+            }
+}
 
 JackDanger.JackSpace.BossPhaser = function(x, y, top, myGame){
     this.Phaser = myGame.enemylasers.create(x , y, "phasers"); 
 
-    //this.Phaser = game.add.sprite(x , y, "phasers");
     this.Phaser.anchor.set(0, 0.5);
 
     game.physics.enable(this.Phaser, Phaser.Physics.ARCADE);
@@ -540,7 +581,6 @@ JackDanger.JackSpace.BossPhaser = function(x, y, top, myGame){
 JackDanger.JackSpace.SlowShot = function(x, y, top, myGame){
     this.Phaser = myGame.enemylasers.create(x , y, "jackspace99", "JDExpl.png"); 
 
-    //this.Phaser = game.add.sprite(x , y, "phasers");
     this.Phaser.anchor.set(0.5, 0.5);
 
     game.physics.enable(this.Phaser, Phaser.Physics.ARCADE);
@@ -573,6 +613,7 @@ JackDanger.JackSpace.prototype.loadTextBox = function() {
 JackDanger.JackSpace.prototype.unpause = function(event){
     if(game.paused){
         game.paused = false;
+
         this.mytween = this.game.add.tween(this.tb2).to( {x: -700}, 700, Phaser.Easing.Back.Out, true, 0, 0);
         this.mytween = this.game.add.tween(this.tb1).to( {x: -700}, 700, Phaser.Easing.Back.Out, true, 0, 0);
         this.mytween.onComplete.add(function(){this.tb1.destroy();}, this);
@@ -591,4 +632,54 @@ JackDanger.JackSpace.prototype.loadStartBox = function() {
     this.mytween.onComplete.add(function(){game.paused = true;}, this);
 
     game.time.events.add(1200 , function() {this.maintheme.play();}, this);
+}
+
+JackDanger.JackSpace.prototype.addHealthbar = function() {
+    console.log("bar");
+
+    var h0 = this.healthbar.create(100 , 400, "healthbarStart");
+    this.anim0 = h0.animations.add('hit');
+    h0.scale.y *= 0.5;
+    var h1 = this.healthbar.create(140 , 400, "healthbar");
+    this.anim1 = h1.animations.add('hit');
+    h1.scale.y *= 0.5;
+    var h2 = this.healthbar.create(180 , 400, "healthbar");
+    this.anim2 = h2.animations.add('hit');
+    h2.scale.y *= 0.5;
+    var h3 = this.healthbar.create(220 , 400, "healthbar");
+    this.anim3 = h3.animations.add('hit');
+    h3.scale.y *= 0.5;    
+    var h4 = this.healthbar.create(260 , 400, "healthbar");
+    this.anim4 = h4.animations.add('hit');
+    h4.scale.y *= 0.5;
+    var h5 = this.healthbar.create(300 , 400, "healthbar");
+    this.anim5 = h5.animations.add('hit');
+    h5.scale.y *= 0.5;
+    var h6 = this.healthbar.create(340 , 400, "healthbar");
+    this.anim6 = h6.animations.add('hit');
+    h6.scale.y *= 0.5;
+    var h7 = this.healthbar.create(380 , 400, "healthbar");
+    this.anim7 = h7.animations.add('hit');
+    h7.scale.y *= 0.5;
+    var h8 = this.healthbar.create(420 , 400, "healthbar");
+    this.anim8 = h8.animations.add('hit');
+    h8.scale.y *= 0.5;
+    var h9 = this.healthbar.create(460 , 400, "healthbar");
+    this.anim9 = h9.animations.add('hit');
+    h9.scale.y *= 0.5;
+    var h10 = this.healthbar.create(500 , 400, "healthbar");
+    this.anim10 = h10.animations.add('hit');
+    h10.scale.y *= 0.5;
+    var h11 = this.healthbar.create(540 , 400, "healthbar");
+    this.anim11 = h11.animations.add('hit');
+    h11.scale.y *= 0.5;
+    var h12 = this.healthbar.create(580 , 400, "healthbar");
+    this.anim12 = h12.animations.add('hit');
+    h12.scale.y *= 0.5;
+    var h13 = this.healthbar.create(620 , 400, "healthbar");
+    this.anim13 = h13.animations.add('hit');
+    h13.scale.y *= 0.5;
+    var h14 = this.healthbar.create(660 , 400, "healthbarEnd");
+    this.anim14 = h14.animations.add('hit');
+    h14.scale.y *= 0.5;
 }
