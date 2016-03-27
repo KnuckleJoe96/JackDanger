@@ -24,6 +24,7 @@ JackDanger.JackSpace.prototype.preload = function() {
     this.load.image('asteroid0', '../assetsraw/asteroid0.png');
     this.load.image('asteroid1', '../assetsraw/asteroid1.png');
     this.load.image('asteroid2', '../assetsraw/asteroid2.png');
+    this.load.image('asteroid3', '../assetsraw/asteroid3.png');
     this.load.image('background', '../assetsraw/background.png');
     this.load.image('laser', '../assetsraw/laser0.png');
     this.load.image('enemylaser', '../assetsraw/laser1.png');
@@ -121,14 +122,10 @@ JackDanger.JackSpace.prototype.mycreate = function() {
     this.cKey = this.input.keyboard.addKey(Phaser.Keyboard.C);
     this.cKey.onDown.add(this.unpause, this);
     clearInterval(this.intervalSpawner);
-    //if(Pad.isDown(Pad.JUMP)) 
-        //this.intervalSpawner = game.time.events.loop(1500, this.spawnAsteroids, this.asteroid);
 
     this.loadStartBox();
 }
 
-
-//wird jeden Frame aufgerufen
 JackDanger.JackSpace.prototype.update = function() {
     if (this.amountCollected >= 4 && !this.bossSpawned && this.counter == 0) {        
         this.counter++;        
@@ -187,6 +184,10 @@ JackDanger.JackSpace.prototype.update = function() {
             var t = this.asteroid.children[i];
             game.debug.body(t);
         }
+        for ( var i = 0; i < this.enemylasers.children.length; i++){
+            var t = this.enemylasers.children[i];
+            game.debug.body(t);
+        }
         if(this.bossSpawned) game.debug.body(this.boss.boss);
     }
 }
@@ -233,7 +234,7 @@ JackDanger.JackSpace.Jack = function(game) {
     this.doAnimation("fly");
 }
 
-JackDanger.JackSpace.Jack.prototype = { //Notizen noch schreiben! z.B. , nach function(){}
+JackDanger.JackSpace.Jack.prototype = { 
     setAnimations: function() {
          this.sprite.animations.add("fly", ["JD1.png", "JD2.png"], 10, true, false);
          this.sprite.animations.add("flyUp", ["JD3.png"], 3, true, false);
@@ -304,12 +305,23 @@ JackDanger.JackSpace.Jack.prototype = { //Notizen noch schreiben! z.B. , nach fu
     }
 }
 
-JackDanger.JackSpace.prototype.spawnAsteroids = function(myAsteroid) {    
-    var object = myAsteroid.create(this.game.width + 32 , Math.random() * 450, "asteroid" + (Math.floor(Math.random() * 3))); 
+JackDanger.JackSpace.prototype.spawnAsteroids = function(myAsteroid) {   
+    var nr = Math.floor(Math.random() * 4); 
+    var object = myAsteroid.create(this.game.width + 32 , Math.random() * 450, "asteroid" + nr); 
 
     object.scale.set(2);
     
     game.physics.enable(object, Phaser.Physics.ARCADE);
+    
+    /*switch(nr) {
+        case 0: object.body.setSize( 14, 11, 0, 0);
+        break;
+        case 1: object.body.setSize( , , 0, 0);
+        break;
+        case 2: object.body.setSize( , , 0, 0);
+        break;
+    }*/
+
     object.body.immovable = true;
     object.anchor.set(0.5,0.5);
     
