@@ -546,9 +546,9 @@ JackDanger.JackSpace.Boss.prototype = {
                 clearInterval(this.intervalSpawner);
                 //game.add.sprite(this.jack.x, this.jack.y, 'jackspace99', "JDVictory.png");
 
-                this.timeText = game.add.bitmapText(game.width / 2, 20, "white", "", 30);
-                this.timeText.anchor.set(0.5);
-                this.timeText.setText("Victory!");
+                this.vicText = game.add.bitmapText(game.width / 2, 20, "white", "", 30);
+                this.vicText.anchor.set(0.5);
+                this.vicText.setText("Victory!");
 
                 game.time.events.add(500, onVictory);
             }
