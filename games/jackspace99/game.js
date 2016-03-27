@@ -173,7 +173,7 @@ JackDanger.JackSpace.prototype.update = function() {
     this.physics.arcade.overlap(this.jack.sprite, this.waist, this.collect, null, this);
     if(this.bossSpawned) this.physics.arcade.overlap(this.lasers, this.boss.boss, this.boss.damageBoss, null, this);
  
-    if(false) {
+    if(true) {
         game.debug.body(this.jack.sprite);
         for ( var i = 0; i < this.enemy.children.length; i++){
             var t = this.enemy.children[i];
@@ -305,7 +305,7 @@ JackDanger.JackSpace.Jack.prototype = {
 }
 
 JackDanger.JackSpace.prototype.spawnAsteroids = function(myAsteroid) {   
-    var nr = Math.floor(Math.random() * 4); 
+    var nr = Math.floor(Math.random() * 3); 
     var object = myAsteroid.create(this.game.width + 32 , Math.random() * 450, "asteroid" + nr); 
 
     object.scale.set(2);
