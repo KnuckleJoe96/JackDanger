@@ -299,7 +299,7 @@ JackDanger.JackSpace.Jack.prototype = {
                 laser.body.velocity.x = 400;
                 game.laserTime = game.time.now + 600;
 
-                this.game.add.audio("lasersound").play();
+                this.game.add.audio("lasersound", 0.5).play();
             }
         }
     }
@@ -392,9 +392,9 @@ JackDanger.JackSpace.prototype.damageEnemy = function(object) {
     object.health--;
 
     if(object.health <= 0){
-        this.game.add.audio("enemydestroy").play();
+        this.game.add.audio("enemydestroy", 0.8).play();
     } else {
-        this.game.add.audio("enemyhit").play();
+        this.game.add.audio("enemyhit", 0.8).play();
     }
     
 }
@@ -466,7 +466,7 @@ JackDanger.JackSpace.prototype.repeatShot = function(myLasers, thisenemy) {
                 enemylaser.body.velocity.x = -200;
                 enemylaser.body.acceleration.x = -450;
 
-                this.game.add.audio("enemylasersound", 0.5).play();
+                this.game.add.audio("enemylasersound", 0.4).play();
 }
 
 JackDanger.JackSpace.prototype.collect = function(player, collectedWaist) {
