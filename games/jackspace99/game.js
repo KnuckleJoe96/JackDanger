@@ -127,7 +127,7 @@ JackDanger.JackSpace.prototype.mycreate = function() {
 }
 
 JackDanger.JackSpace.prototype.update = function() {
-    if (this.amountCollected >= 4 && !this.bossSpawned && this.counter == 0) {        
+    if (this.amountCollected >= 0 && !this.bossSpawned && this.counter == 0) {        
         this.counter++;        
 
         this.loadTextBox();
@@ -173,7 +173,7 @@ JackDanger.JackSpace.prototype.update = function() {
     this.physics.arcade.overlap(this.jack.sprite, this.waist, this.collect, null, this);
     if(this.bossSpawned) this.physics.arcade.overlap(this.lasers, this.boss.boss, this.boss.damageBoss, null, this);
  
-    if(true) {
+    if(false) {
         game.debug.body(this.jack.sprite);
         for ( var i = 0; i < this.enemy.children.length; i++){
             var t = this.enemy.children[i];
@@ -238,6 +238,7 @@ JackDanger.JackSpace.Jack.prototype = {
          this.sprite.animations.add("fly", ["JD1.png", "JD2.png"], 10, true, false);
          this.sprite.animations.add("flyUp", ["JD3.png"], 3, true, false);
          this.sprite.animations.add("flyDown", ["JD4.png"], 3, true, false);
+         this.sprite.animations.add("Victory", ["JDVictory.png"], 0, true, false);
     },
 
     doAnimation: function(name) {
@@ -543,6 +544,12 @@ JackDanger.JackSpace.Boss.prototype = {
 
             if(this.boss.boss.health <= 0) {
                 clearInterval(this.intervalSpawner);
+                //game.add.sprite(this.jack.x, this.jack.y, 'jackspace99', "JDVictory.png");
+
+                this.timeText = game.add.bitmapText(game.width / 2, 20, "white", "", 30);
+                this.timeText.anchor.set(0.5);
+                this.timeText.setText("Victory!");
+
                 game.time.events.add(500, onVictory);
             }
     }
