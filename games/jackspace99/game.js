@@ -138,7 +138,6 @@ JackDanger.JackSpace.prototype.update = function() {
         game.time.events.add(1200 , function() { 
             for(var i = 0; i < this.enemy.children.length; i++){
                 var t = this.enemy.children[i];
-                console.log(t.health);
                 t.health = 0;
             }   
             this.managemusic();
@@ -423,7 +422,6 @@ JackDanger.JackSpace.prototype.updateBackground = function() {
 
 JackDanger.JackSpace.prototype.collisionHandler = function(laser, enemy){
     laser.kill();
-    console.log("H"+enemy.health);
     this.damageEnemy(enemy);
 }
 
@@ -461,7 +459,7 @@ JackDanger.JackSpace.prototype.repeatShot = function(myLasers, thisenemy) {
 JackDanger.JackSpace.prototype.collect = function(player, collectedWaist) {
     collectedWaist.destroy();
     this.amountCollected++;
-    console.log(this.amountCollected);
+    //console.log(this.amountCollected);
 }
 
 JackDanger.JackSpace.prototype.spawnBoss = function() {
@@ -525,8 +523,8 @@ JackDanger.JackSpace.Boss.prototype = {
 
     damageBoss: function(boss, laser) {
             laser.kill();
-            //boss.destroy();
-            console.log(this.boss.boss.health);
+
+            //console.log(this.boss.boss.health);
             this.boss.boss.health--;
 
             this.manageHealthbar(this.boss.boss.health);
@@ -646,8 +644,6 @@ JackDanger.JackSpace.prototype.loadStartBox = function() {
 }
 
 JackDanger.JackSpace.prototype.addHealthbar = function() {
-    console.log("bar");
-
     var h0 = this.healthbar.create(100 , 400, "healthbarStart");
     this.anim0 = h0.animations.add('hit');
     h0.scale.y *= 0.5;
