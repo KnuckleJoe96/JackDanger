@@ -127,7 +127,7 @@ JackDanger.JackSpace.prototype.mycreate = function() {
 }
 
 JackDanger.JackSpace.prototype.update = function() {
-    if (this.amountCollected >= 0 && !this.bossSpawned && this.counter == 0) {        
+    if (this.amountCollected >= 6 && !this.bossSpawned && this.counter == 0) {        
         this.counter++;        
 
         this.loadTextBox();
