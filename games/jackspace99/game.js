@@ -306,7 +306,7 @@ JackDanger.JackSpace.Jack.prototype = {
 }
 
 JackDanger.JackSpace.prototype.spawnAsteroids = function(myAsteroid) {   
-    var nr = Math.floor(Math.random() * 4); 
+    var nr = Math.floor(Math.random() * 3); 
     var object = myAsteroid.create(this.game.width + 32 , Math.random() * 450, "asteroid" + nr); 
 
     object.scale.set(2);
