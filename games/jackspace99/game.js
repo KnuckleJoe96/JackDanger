@@ -127,7 +127,7 @@ JackDanger.JackSpace.prototype.mycreate = function() {
 }
 
 JackDanger.JackSpace.prototype.update = function() {
-    if (this.amountCollected >= 4 && !this.bossSpawned && this.counter == 0) {        
+    if (this.amountCollected >= 6 && !this.bossSpawned && this.counter == 0) {        
         this.counter++;        
 
         this.loadTextBox();
@@ -135,7 +135,6 @@ JackDanger.JackSpace.prototype.update = function() {
         game.time.events.add(1200 , function() { 
             for(var i = 0; i < this.enemy.children.length; i++){
                 var t = this.enemy.children[i];
-                console.log(t.health);
                 t.health = 0;
             }   
             this.managemusic();
@@ -239,6 +238,7 @@ JackDanger.JackSpace.Jack.prototype = {
          this.sprite.animations.add("fly", ["JD1.png", "JD2.png"], 10, true, false);
          this.sprite.animations.add("flyUp", ["JD3.png"], 3, true, false);
          this.sprite.animations.add("flyDown", ["JD4.png"], 3, true, false);
+         this.sprite.animations.add("Victory", ["JDVictory.png"], 0, true, false);
     },
 
     doAnimation: function(name) {
@@ -435,7 +435,6 @@ JackDanger.JackSpace.prototype.updateBackground = function() {
 
 JackDanger.JackSpace.prototype.collisionHandler = function(laser, enemy){
     laser.kill();
-    console.log("H"+enemy.health);
     this.damageEnemy(enemy);
 }
 
@@ -473,7 +472,7 @@ JackDanger.JackSpace.prototype.repeatShot = function(myLasers, thisenemy) {
 JackDanger.JackSpace.prototype.collect = function(player, collectedWaist) {
     collectedWaist.destroy();
     this.amountCollected++;
-    console.log(this.amountCollected);
+    //console.log(this.amountCollected);
 }
 
 JackDanger.JackSpace.prototype.spawnBoss = function() {
@@ -537,14 +536,20 @@ JackDanger.JackSpace.Boss.prototype = {
 
     damageBoss: function(boss, laser) {
             laser.kill();
-            //boss.destroy();
-            console.log(this.boss.boss.health);
+
+            //console.log(this.boss.boss.health);
             this.boss.boss.health--;
 
             this.manageHealthbar(this.boss.boss.health);
 
             if(this.boss.boss.health <= 0) {
                 clearInterval(this.intervalSpawner);
+                //game.add.sprite(this.jack.x, this.jack.y, 'jackspace99', "JDVictory.png");
+
+                this.timeText = game.add.bitmapText(game.width / 2, 20, "white", "", 30);
+                this.timeText.anchor.set(0.5);
+                this.timeText.setText("Victory!");
+
                 game.time.events.add(500, onVictory);
             }
     }
@@ -658,8 +663,6 @@ JackDanger.JackSpace.prototype.loadStartBox = function() {
 }
 
 JackDanger.JackSpace.prototype.addHealthbar = function() {
-    console.log("bar");
-
     var h0 = this.healthbar.create(100 , 400, "healthbarStart");
     this.anim0 = h0.animations.add('hit');
     h0.scale.y *= 0.5;

@@ -1,35 +1,40 @@
 {
 "frames": {
 	"JD1.png": {
-		"frame": {"x":0, "y":73, "w":61, "h":26},
+		"frame": {"x":0, "y":0, "w":61, "h":26},
 		"spriteSourceSize": {"x":1,"y":2,"w":64,"h":32},
 		"sourceSize": {"w":64,"h":32}
 	},
 	"JD2.png": {
-		"frame": {"x":0, "y":23, "w":61, "h":26},
+		"frame": {"x":62, "y":0, "w":61, "h":26},
 		"spriteSourceSize": {"x":1,"y":2,"w":64,"h":32},
 		"sourceSize": {"w":64,"h":32}
 	},
 	"JD3.png": {
-		"frame": {"x":0, "y":0, "w":61, "h":22},
+		"frame": {"x":0, "y":53, "w":61, "h":22},
 		"spriteSourceSize": {"x":1,"y":5,"w":64,"h":32},
 		"sourceSize": {"w":64,"h":32}
 	},
 	"JD4.png": {
-		"frame": {"x":0, "y":50, "w":61, "h":22},
+		"frame": {"x":0, "y":76, "w":61, "h":22},
 		"spriteSourceSize": {"x":1,"y":5,"w":64,"h":32},
 		"sourceSize": {"w":64,"h":32}
 	},
 	"JDExpl.png": {
-		"frame": {"x":62, "y":0, "w":28, "h":28},
+		"frame": {"x":62, "y":27, "w":28, "h":28},
 		"spriteSourceSize": {"x":0,"y":0,"w":28,"h":28},
 		"sourceSize": {"w":28,"h":28}
+	},
+	"JDVictory.png": {
+		"frame": {"x":0, "y":27, "w":61, "h":25},
+		"spriteSourceSize": {"x":1,"y":5,"w":64,"h":32},
+		"sourceSize": {"w":64,"h":32}
 	}
 
 },
 "meta": {
 	"image": "../assets/jackspace99.png",
-	"size": {"w": 91, "h": 100},
+	"size": {"w": 124, "h": 99},
 	"scale": "1"
 }
 }
