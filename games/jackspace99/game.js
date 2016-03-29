@@ -33,6 +33,8 @@ JackDanger.JackSpace.prototype.preload = function() {
     this.load.image('TextBox', '../assetsraw/TextBox.png');
     this.load.image('TextBoxAnfang', '../assetsraw/TextBoxAnfang.png');
     this.load.image('smoke', '../assetsraw/smoke.png');
+    this.load.image('PressC', '../assetsraw/PressC.png');
+    this.load.image('collected', '../assetsraw/gesammelt.png');
     
     this.load.spritesheet('bosssheet', '../assetsraw/bossshipSpritesheet.png', 150, 450, 3);
     this.load.spritesheet('enemysheet', '../assetsraw/Enemy.png', 32, 32, 4);
@@ -83,6 +85,8 @@ JackDanger.JackSpace.prototype.mycreate = function() {
     this.counter = 0;
     this.asteroidTimer = 0;
 
+    this.collectedBar = this.createCollectedBar();
+
     clearTimeout(this.spawnTimer);
 
     this.myJack = this.createJack();
@@ -127,7 +131,7 @@ JackDanger.JackSpace.prototype.mycreate = function() {
 }
 
 JackDanger.JackSpace.prototype.update = function() {
-    if (this.amountCollected >= 6 && !this.bossSpawned && this.counter == 0) {        
+    if (this.amountCollected >= 5 && !this.bossSpawned && this.counter == 0) {        
         this.counter++;        
 
         this.loadTextBox();
@@ -157,6 +161,7 @@ JackDanger.JackSpace.prototype.update = function() {
         this.spawnAsteroids(this.asteroid);
     }
 
+    this.updateCollectedBar();
     this.updateAsteroids(dt);
     this.updateEnemy(dt);
     this.updateBackground(dt);
@@ -214,7 +219,8 @@ JackDanger.JackSpace.prototype.lose = function(object, jack) {
 
     if(this.notHit){
         game.add.audio('gethit').play();
-        setTimeout(function(){ onLose(); }, 2000);
+        setTimeout(onLose, 2000);
+        clearTimeout(this.spawnTimer);
         this.notHit = false;
     }
 }
@@ -546,6 +552,8 @@ JackDanger.JackSpace.Boss.prototype = {
                 clearInterval(this.intervalSpawner);
                 //game.add.sprite(this.jack.x, this.jack.y, 'jackspace99', "JDVictory.png");
 
+
+
                 this.vicText = game.add.bitmapText(game.width / 2, 20, "white", "", 30);
                 this.vicText.anchor.set(0.5);
                 this.vicText.setText("Victory!");
@@ -633,8 +641,10 @@ JackDanger.JackSpace.SlowShot.prototype = {
 
 JackDanger.JackSpace.prototype.loadTextBox = function() {
     this.tb1 = game.add.sprite(-700 , 300, "TextBox");
+    this.pressC = game.add.sprite(-50, 410, "PressC");
 
     this.mytween = this.game.add.tween(this.tb1).to( {x: 50}, 700, Phaser.Easing.Back.Out, true, 0, 0);
+    this.mytween2 = this.game.add.tween(this.pressC).to( {x: 700}, 700, Phaser.Easing.Back.Out, true, 0, 0);
     this.mytween.onComplete.add(function(){game.paused = true;}, this);
 }
 
@@ -644,7 +654,10 @@ JackDanger.JackSpace.prototype.unpause = function(event){
 
         this.mytween = this.game.add.tween(this.tb2).to( {x: -700}, 700, Phaser.Easing.Back.Out, true, 0, 0);
         this.mytween = this.game.add.tween(this.tb1).to( {x: -700}, 700, Phaser.Easing.Back.Out, true, 0, 0);
-        this.mytween.onComplete.add(function(){this.tb1.destroy();}, this);
+        this.mytween = this.game.add.tween(this.pressC).to( {x: -60}, 700, Phaser.Easing.Back.Out, true, 0, 0);
+        /*this.mytween.onComplete.add(function(){this.tb1.destroy(); 
+            this.tb2.destroy(); 
+            this.pressC.destroy();}, this);*/
     }
 }
 
@@ -655,8 +668,10 @@ JackDanger.JackSpace.prototype.managemusic = function(){
 
 JackDanger.JackSpace.prototype.loadStartBox = function() {
     this.tb2 = game.add.sprite(-700 , 300, "TextBoxAnfang");
+    this.pressC = game.add.sprite(-50, 410, "PressC");
 
     this.mytween = this.game.add.tween(this.tb2).to( {x: 50}, 700, Phaser.Easing.Back.Out, true, 0, 0);
+    this.mytween2 = this.game.add.tween(this.pressC).to( {x: 700}, 700, Phaser.Easing.Back.Out, true, 0, 0);
     this.mytween.onComplete.add(function(){game.paused = true;}, this);
 
     game.time.events.add(1200 , function() {this.maintheme.play();}, this);
@@ -708,4 +723,17 @@ JackDanger.JackSpace.prototype.addHealthbar = function() {
     var h14 = this.healthbar.create(660 , 400, "healthbarEnd");
     this.anim14 = h14.animations.add('hit');
     h14.scale.y *= 0.5;
+}
+
+JackDanger.JackSpace.prototype.createCollectedBar = function() {
+    this.game.add.sprite(0, 20, 'collected');
+
+    this.collectedText = game.add.bitmapText(80, 22, "white", "0", 18);
+
+    this.collectedText.anchor.set(0.5, 0);
+    this.collectedText.setText("0");
+}
+
+JackDanger.JackSpace.prototype.updateCollectedBar = function() {
+    if(this.collectedText.text != this.amountCollected) this.collectedText.setText(this.amountCollected); 
 }
