@@ -64,7 +64,7 @@ JackDanger.JackSpace.prototype.create = function() {
 
 JackDanger.JackSpace.prototype.mycreate = function() {
     this.initPhysics();
-    
+
     this.maintheme = game.add.audio('maintheme', 1, true)
     this.bosstheme = game.add.audio('bosstheme', 1, true);
     this.maintheme.stop();
@@ -84,8 +84,9 @@ JackDanger.JackSpace.prototype.mycreate = function() {
     this.tb1 = null;
     this.counter = 0;
     this.asteroidTimer = 0;
-
-    this.collectedBar = this.createCollectedBar();
+    this.switcher = true;
+    this.vicTime = null;
+    this.enemiesOnScreen = 0;
 
     clearTimeout(this.spawnTimer);
 
@@ -117,15 +118,18 @@ JackDanger.JackSpace.prototype.mycreate = function() {
     this.enemylasers.enableBody = true;
     this.enemylasers.physicsBodyType = Phaser.Physics.ARCADE;
 
-    this.enemylasers.createMultiple(15, 'enemylaser');
+    this.enemylasers.createMultiple(20, 'enemylaser');
     this.enemylasers.setAll('anchor.x', 0);
     this.enemylasers.setAll('anchor.y', 0.5);
     this.enemylasers.setAll('outOfBoundsKill', true);
     this.enemylasers.setAll('checkWorldBounds', true);
 
+    this.collectedBar = this.createCollectedBar();
     this.cKey = this.input.keyboard.addKey(Phaser.Keyboard.C);
     this.cKey.onDown.add(this.unpause, this);
     clearInterval(this.intervalSpawner);
+
+    this.words = [ 'Autsch!', 'Aua!', 'Mist!', 'Verdammt!', 'Nicht schon wieder...', 'Grrrr...'];
 
     this.loadStartBox();
 }
@@ -153,7 +157,7 @@ JackDanger.JackSpace.prototype.update = function() {
 
     if(!this.enemyOnScreen && !this.bossSpawned) {
         this.enemyOnScreen = true;
-        this.spawnTimer = setTimeout(this.spawnEnemy, 4000, this.enemy);
+        this.spawnTimer = setTimeout(this.spawnEnemy, 4000, this.enemy, this.amountCollected, this);
     }
 
     if(game.time.now > this.asteroidTimer + 1500) {
@@ -209,10 +213,9 @@ JackDanger.JackSpace.prototype.createJack = function() {
 }
 
 JackDanger.JackSpace.prototype.lose = function(object, jack) {
-    this.timeText = game.add.bitmapText(game.width / 2, 20, "white", "", 30);
-    this.timeText.anchor.set(0.5);
-    this.timeText.setText("Autsch!");
+
     clearInterval(this.intervalSpawner);
+    clearTimeout(this.vicTime);
 
     this.maintheme.stop();
     this.bosstheme.stop();
@@ -222,6 +225,10 @@ JackDanger.JackSpace.prototype.lose = function(object, jack) {
         setTimeout(onLose, 2000);
         clearTimeout(this.spawnTimer);
         this.notHit = false;
+
+        this.timeText = game.add.bitmapText(game.width / 2, 20, "white", "", 30);
+        this.timeText.anchor.set(0.5);
+        this.timeText.setText(game.rnd.pick(this.words));
     }
 }
 
@@ -318,15 +325,6 @@ JackDanger.JackSpace.prototype.spawnAsteroids = function(myAsteroid) {
     object.scale.set(2);
     
     game.physics.enable(object, Phaser.Physics.ARCADE);
-    
-    /*switch(nr) {
-        case 0: object.body.setSize( 14, 11, 0, 0);
-        break;
-        case 1: object.body.setSize( , , 0, 0);
-        break;
-        case 2: object.body.setSize( , , 0, 0);
-        break;
-    }*/
 
     object.body.immovable = true;
     object.anchor.set(0.5,0.5);
@@ -345,8 +343,23 @@ JackDanger.JackSpace.prototype.updateAsteroids = function() {
     }
 }
 
-JackDanger.JackSpace.prototype.spawnEnemy = function(myEnemy) {    
-    var object = myEnemy.create(this.game.width + 50, Math.random() * 350, "enemysheet");
+JackDanger.JackSpace.prototype.spawnEnemy = function(myEnemy, amnt, thisGame) { 
+    this.myY = (this.switcher ? 0.2 : 0.8) * this.game.height;
+
+    switch(amnt){
+        case 0: thisGame.setEnemy(myEnemy, this.myY, this.switcher, false); break;
+        case 1: thisGame.setEnemy(myEnemy, this.myY, this.switcher, false); break;
+        case 2: thisGame.setEnemy(myEnemy, this.myY, true, true); break;
+        case 3: thisGame.setEnemy(myEnemy, this.myY, true, true); break;
+        case 4: thisGame.setEnemy(myEnemy, this.myY, false, true); break;
+        default: this.setEnemy(myEnemy, this.myY, true, false);;
+    }      
+    this.switcher = !this.switcher; 
+}
+
+JackDanger.JackSpace.prototype.setEnemy = function(myEnemy, y, down, two) {
+    var object = myEnemy.create(this.game.width + 50, y, "enemysheet");
+    this.enemiesOnScreen++;
     var anim = object.animations.add('anim');    
     object.animations.play('anim', 15, true);
     
@@ -354,18 +367,39 @@ JackDanger.JackSpace.prototype.spawnEnemy = function(myEnemy) {
     object.scale.set(2);
     
     game.physics.enable(object, Phaser.Physics.ARCADE);
-    object.body.velocity.x = -30;
-    object.body.velocity.y = 80;
     object.body.allowGravity = false;
     object.body.immovable = true;
 
+    this.game.add.tween(object).to({x: this.game.width - 40}, 2000, Phaser.Easing.Back.Out, true, 0, 0, false);
+    this.game.add.tween(object).to({y: this.game.height - y}, 2500, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
+
     object.health = 3;
+
+    if(two){
+        var object = myEnemy.create(this.game.width + 50, this.game.height - y, "enemysheet");
+        this.enemiesOnScreen++;
+        var anim = object.animations.add('anim');    
+        object.animations.play('anim', 15, true);
+        
+        object.anchor.set(1, 0.5);
+        object.scale.set(2);
+        
+        game.physics.enable(object, Phaser.Physics.ARCADE);
+        object.body.allowGravity = false;
+        object.body.immovable = true;
+
+        this.game.add.tween(object.body).to({x: this.game.width-200}, 2000, Phaser.Easing.Back.Out, true, 0, 0, false);
+        this.game.add.tween(object.body).to({y: y}, 2500, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
+
+        object.health = 3;
+    }
 }
+
 
 JackDanger.JackSpace.prototype.updateEnemy = function() {
     for ( var i = 0; i < this.enemy.children.length; i++){
         var t = this.enemy.children[i];
-        setDirVel(t);
+
         this.enemyFire(t);
 
         if(t.health <= 0){
@@ -388,8 +422,9 @@ JackDanger.JackSpace.prototype.updateEnemy = function() {
             w1.animations.play('anim', 10, true);
 
             w1.body.velocity.x = -50;
-            this.enemyOnScreen = false;
             t.destroy();
+            this.enemiesOnScreen--;
+            if(this.enemy.getFirstExists(true) == null) this.enemyOnScreen = false;
         }
     }
 }
@@ -402,21 +437,6 @@ JackDanger.JackSpace.prototype.damageEnemy = function(object) {
     } else {
         this.game.add.audio("enemyhit", 0.8).play();
     }
-    
-}
-
-function setDirVel(myEnem) { //ZU CHAOTISCH
-    if(myEnem.x < this.game.width - 40) {
-        myEnem.body.velocity.x = 0;
-    } 
-
-    if(myEnem.y > 0.8*this.game.height) { 
-        myEnem.body.velocity.y = -80;
-    } 
-
-    if(myEnem.y < 0.2*this.game.height) {
-        myEnem.body.velocity.y = 80;
-    }    
 }
 
 JackDanger.JackSpace.prototype.addBackground = function() {
@@ -445,7 +465,6 @@ JackDanger.JackSpace.prototype.collisionHandler = function(laser, enemy){
 }
 
 JackDanger.JackSpace.prototype.collisionAsteroid = function(laser, enemy){
-    //laser.destroy(); Warum funktioniert hier destroy nicht? In CollisionHandler funktioniert es doch auch?
     laser.kill();
     this.game.add.audio("laserasteroidhit").play();
 }
@@ -458,10 +477,18 @@ JackDanger.JackSpace.prototype.enemyFire = function(thisenemy) {
             enemylaser.reset(thisenemy.x - thisenemy.width, thisenemy.y);
             enemylaser.body.velocity.x = -200;
             enemylaser.body.acceleration.x = -450;
-            
+                                
+            this.counter++;
+
             game.time.events.repeat(150, 2, this.repeatShot, this, this.enemylasers, thisenemy);
-                //this.game.add.tween(enemylaser.scale).to( {x: 2, y: 2}, 1200, Phaser.Easing.Linear.None, true, 0, 4, true);
-            this.chargeTime = game.time.now + 3000;
+            if(this.enemiesOnScreen >= 2) {
+                if(this.counter >= this.enemiesOnScreen) {
+                    this.chargeTime = game.time.now + 3000;
+                    this.counter = 0; 
+                } 
+            } else {
+                this.chargeTime = game.time.now + 3000;
+            }
         }
     }
 }
@@ -558,7 +585,7 @@ JackDanger.JackSpace.Boss.prototype = {
                 this.vicText.anchor.set(0.5);
                 this.vicText.setText("Victory!");
 
-                game.time.events.add(500, onVictory);
+                this.vicTime = game.time.events.add(500, onVictory);
             }
     }
 }
