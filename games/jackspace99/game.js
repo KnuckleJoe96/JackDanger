@@ -87,6 +87,7 @@ JackDanger.JackSpace.prototype.mycreate = function() {
     this.switcher = true;
     this.vicTime = null;
     this.enemiesOnScreen = 0;
+    this.initBoss = false;
 
     clearTimeout(this.spawnTimer);
 
@@ -135,9 +136,9 @@ JackDanger.JackSpace.prototype.mycreate = function() {
 }
 
 JackDanger.JackSpace.prototype.update = function() {
-    if (this.amountCollected >= 5 && !this.bossSpawned && this.counter == 0) {        
-        this.counter++;        
-
+    if (this.amountCollected >= 5 && !this.initBoss) {        
+        this.initBoss = true;    
+        console.log("Textbox-Schleife");
         this.loadTextBox();
 
         game.time.events.add(1200 , function() { 
@@ -669,7 +670,7 @@ JackDanger.JackSpace.SlowShot.prototype = {
 JackDanger.JackSpace.prototype.loadTextBox = function() {
     this.tb1 = game.add.sprite(-700 , 300, "TextBox");
     this.pressC = game.add.sprite(-50, 410, "PressC");
-
+    console.log("textbox-Funktion");
     this.mytween = this.game.add.tween(this.tb1).to( {x: 50}, 700, Phaser.Easing.Back.Out, true, 0, 0);
     this.mytween2 = this.game.add.tween(this.pressC).to( {x: 700}, 700, Phaser.Easing.Back.Out, true, 0, 0);
     this.mytween.onComplete.add(function(){game.paused = true;}, this);
