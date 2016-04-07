@@ -176,7 +176,7 @@ JackDanger.JackSpace.prototype.update = function() {
     this.physics.arcade.overlap(this.asteroid, this.jack.sprite, this.lose, null, this); 
     this.physics.arcade.collide(this.asteroid, this.jack.sprite, this.lose, null, this);
     this.physics.arcade.overlap(this.enemylasers, this.jack.sprite, this.lose, null, this);          
-    this.physics.arcade.overlap(this.jack.sprite, this.enemy, this.lose);
+    this.physics.arcade.overlap(this.jack.sprite, this.enemy, this.lose, null, this);
     this.physics.arcade.overlap(this.lasers, this.enemy, this.collisionHandler, null, this);
     this.physics.arcade.overlap(this.lasers, this.asteroid, this.collisionAsteroid, null, this);
     this.physics.arcade.collide(this.asteroid, this.asteroid);
